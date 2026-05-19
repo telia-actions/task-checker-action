@@ -31,7 +31,7 @@ function stripIgnoreBlocks(body: string, onWarning?: (msg: string) => void): str
 
 export function parseTasks(body: string, onWarning?: (msg: string) => void): ParseResult {
   const stripped = stripIgnoreBlocks(body, onWarning)
-  const lines = stripped.split("\n")
+  const lines = stripped.split("\n").map((line) => line.replace(/\r$/, ""))
 
   const tasks: Task[] = []
   let pendingCount = 0

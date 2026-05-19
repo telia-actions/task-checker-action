@@ -58,24 +58,15 @@ jobs:
           echo '{"pull_request":{"body":""}}' > /tmp/event-no-tasks.json
 
       - name: Action should pass when all tasks are checked
-        env:
-          GITHUB_EVENT_NAME: pull_request
-          GITHUB_EVENT_PATH: /tmp/event-pass.json
-        run: node dist/index.js
+        run: GITHUB_EVENT_NAME=pull_request GITHUB_EVENT_PATH=/tmp/event-pass.json node dist/index.js
 
       - name: Action should pass when there are no tasks
-        env:
-          GITHUB_EVENT_NAME: pull_request
-          GITHUB_EVENT_PATH: /tmp/event-no-tasks.json
-        run: node dist/index.js
+        run: GITHUB_EVENT_NAME=pull_request GITHUB_EVENT_PATH=/tmp/event-no-tasks.json node dist/index.js
 
       - name: Action should fail when tasks are unchecked
         id: run-failing
         continue-on-error: true
-        env:
-          GITHUB_EVENT_NAME: pull_request
-          GITHUB_EVENT_PATH: /tmp/event-fail.json
-        run: node dist/index.js
+        run: GITHUB_EVENT_NAME=pull_request GITHUB_EVENT_PATH=/tmp/event-fail.json node dist/index.js
 
       - name: Verify action failed as expected
         if: steps.run-failing.outcome != 'failure'

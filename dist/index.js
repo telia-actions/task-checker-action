@@ -33017,7 +33017,7 @@ function stripIgnoreBlocks(body, onWarning) {
 }
 function parseTasks(body, onWarning) {
     const stripped = stripIgnoreBlocks(body, onWarning);
-    const lines = stripped.split("\n");
+    const lines = stripped.split("\n").map((line) => line.replace(/\r$/, ""));
     const tasks = [];
     let pendingCount = 0;
     for (let i = 0; i < lines.length; i++) {
