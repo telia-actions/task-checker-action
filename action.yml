@@ -1,0 +1,11 @@
+name: 'PR Task Checker'
+description: 'Fails the workflow if any task checkboxes in the PR body are unchecked'
+author: 'Marcus Lönnqvist'
+
+branding:
+  icon: 'check-circle'
+  color: 'green'
+
+runs:
+  using: 'node24'
+  main: 'dist/index.js'
