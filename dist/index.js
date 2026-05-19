@@ -28096,6 +28096,13 @@ function error(message, properties = {}) {
 function warning(message, properties = {}) {
     issueCommand('warning', toCommandProperties(properties), message instanceof Error ? message.toString() : message);
 }
+/**
+ * Writes info to log with console.log.
+ * @param message info message
+ */
+function info(message) {
+    process.stdout.write(message + os.EOL);
+}
 
 class Context {
     /**
@@ -33052,6 +33059,9 @@ async function run() {
             .map((t) => `  - ${t.text}`)
             .join("\n");
         setFailed(`PR has ${result.pendingCount} unchecked task(s):\n${pendingList}`);
+    }
+    else {
+        info("✅ All tasks completed");
     }
 }
 
