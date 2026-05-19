@@ -1,0 +1,15 @@
+name: PR Checklist
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+jobs:
+  task-checker:
+    name: Check PR checklist
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Check PR tasks
+        uses: telia-actions/task-checker-action@main
