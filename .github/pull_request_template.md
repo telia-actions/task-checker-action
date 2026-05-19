@@ -4,5 +4,5 @@
 
 ## Checklist
 
-- [ ] Tests have been added or updated
+- [ ] Tests run and passed
 - [ ] CHANGELOG.md has been updated

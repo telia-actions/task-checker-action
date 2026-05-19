@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Changelog!
+- Release flow action
 - Initial release of PR Task Checker action
 - Fails the workflow if any task checkboxes in a PR body are unchecked
 - Support for suppressing individual tasks with a `Not applicable` sub-item
