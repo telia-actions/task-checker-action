@@ -23,5 +23,7 @@ export async function run(): Promise<void> {
       .map((t) => `  - ${t.text}`)
       .join("\n")
     core.setFailed(`PR has ${result.pendingCount} unchecked task(s):\n${pendingList}`)
+  } else {
+    core.info("✅ All tasks completed")
   }
 }
