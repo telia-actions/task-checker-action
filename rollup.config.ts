@@ -7,8 +7,7 @@ export default defineConfig({
   input: "src/index.ts",
   output: {
     file: "dist/index.js",
-    format: "cjs",
-    exports: "auto",
+    format: "es",
   },
   external: [
     // bare names
