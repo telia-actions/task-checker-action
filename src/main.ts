@@ -17,13 +17,13 @@ export async function run(): Promise<void> {
   const result = parseTasks(body, (msg) => core.warning(msg))
 
   // 4. Fail or succeed
-  if (!result.allDone) {
+  if (result.allDone) {
+    core.info("✅ All tasks completed")
+  } else {
     const pendingList = result.tasks
       .filter((t) => t.status === "pending")
       .map((t) => `  - ${t.text}`)
       .join("\n")
     core.setFailed(`PR has ${result.pendingCount} unchecked task(s):\n${pendingList}`)
-  } else {
-    core.info("✅ All tasks completed")
   }
 }

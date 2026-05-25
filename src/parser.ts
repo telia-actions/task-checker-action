@@ -45,11 +45,14 @@ export function parseTasks(body: string, onWarning?: (msg: string) => void): Par
     if (text.length === 0) continue
     const nextLine = lines[i + 1]
 
-    const status: TaskStatus = checked
-      ? "checked"
-      : nextLine !== undefined && NOT_APPLICABLE_RE.test(nextLine)
-        ? "ignored"
-        : "pending"
+    let status: TaskStatus
+    if (checked) {
+      status = "checked"
+    } else if (nextLine !== undefined && NOT_APPLICABLE_RE.test(nextLine)) {
+      status = "ignored"
+    } else {
+      status = "pending"
+    }
 
     if (status === "pending") pendingCount++
     tasks.push({ text, status })
