@@ -2,8 +2,9 @@
   "name": "task-checker-action",
   "version": "0.0.1",
   "description": "GitHub Action that checks if all PR task checkboxes are checked",
+  "private": true,
   "type": "module",
-  "packageManager": "pnpm@11.1.3",
+  "packageManager": "pnpm@11.3.0",
   "engines": {
     "node": ">=24.0.0"
   },
@@ -11,9 +12,7 @@
     "bundle": "rollup --config rollup.config.ts --configPlugin @rollup/plugin-typescript",
     "test": "vitest run",
     "coverage": "vitest run --coverage",
-    "check": "biome check .",
-    "format": "biome format --write .",
-    "lint": "biome lint ."
+    "lint": "biome check ."
   },
   "dependencies": {
     "@actions/core": "^3.0.1",

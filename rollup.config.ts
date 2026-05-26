@@ -1,7 +1,8 @@
-import commonjs from "@rollup/plugin-commonjs"
-import nodeResolve from "@rollup/plugin-node-resolve"
-import typescript from "@rollup/plugin-typescript"
-import { defineConfig } from "rollup"
+import { builtinModules } from "node:module";
+import commonjs from "@rollup/plugin-commonjs";
+import nodeResolve from "@rollup/plugin-node-resolve";
+import typescript from "@rollup/plugin-typescript";
+import { defineConfig } from "rollup";
 
 export default defineConfig({
   input: "src/index.ts",
@@ -9,75 +10,7 @@ export default defineConfig({
     file: "dist/index.js",
     format: "es",
   },
-  external: [
-    // bare names
-    "os",
-    "path",
-    "fs",
-    "fs/promises",
-    "crypto",
-    "http",
-    "https",
-    "net",
-    "tls",
-    "url",
-    "util",
-    "stream",
-    "zlib",
-    "events",
-    "assert",
-    "buffer",
-    "child_process",
-    "cluster",
-    "dns",
-    "domain",
-    "module",
-    "perf_hooks",
-    "process",
-    "punycode",
-    "querystring",
-    "readline",
-    "repl",
-    "string_decoder",
-    "timers",
-    "tty",
-    "v8",
-    "vm",
-    "worker_threads",
-    // node: prefixed variants (used by modern dependencies)
-    "node:os",
-    "node:path",
-    "node:fs",
-    "node:fs/promises",
-    "node:crypto",
-    "node:http",
-    "node:https",
-    "node:net",
-    "node:tls",
-    "node:url",
-    "node:util",
-    "node:stream",
-    "node:zlib",
-    "node:events",
-    "node:assert",
-    "node:buffer",
-    "node:child_process",
-    "node:cluster",
-    "node:dns",
-    "node:domain",
-    "node:module",
-    "node:perf_hooks",
-    "node:process",
-    "node:querystring",
-    "node:readline",
-    "node:repl",
-    "node:string_decoder",
-    "node:timers",
-    "node:tty",
-    "node:v8",
-    "node:vm",
-    "node:worker_threads",
-  ],
+  external: (id) => id.startsWith("node:") || builtinModules.includes(id),
   plugins: [
     nodeResolve({ exportConditions: ["node"], preferBuiltins: true }),
     commonjs(),
@@ -89,4 +22,4 @@ export default defineConfig({
       inlineSources: false,
     }),
   ],
-})
+});

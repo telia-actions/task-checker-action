@@ -14,10 +14,11 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: "24.x"
+          cache: "pnpm"
 
       - uses: pnpm/action-setup@v6
         with:
-          version: "11.1.3"
+          version: "11.3.0"
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -30,3 +31,47 @@ jobs:
 
       - name: Build
         run: pnpm bundle
+
+  integration-test:
+    name: Integration test (run action)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "24.x"
+          cache: "pnpm"
+
+      - uses: pnpm/action-setup@v6
+        with:
+          version: "11.3.0"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm bundle
+
+      - name: Create event fixtures
+        run: |
+          echo '{"pull_request":{"body":"- [x] Task 1\n- [x] Task 2"}}' > /tmp/event-pass.json
+          echo '{"pull_request":{"body":"- [x] Task 1\n- [ ] Task 2"}}' > /tmp/event-fail.json
+          echo '{"pull_request":{"body":""}}' > /tmp/event-no-tasks.json
+
+      - name: Action should pass when all tasks are checked
+        run: GITHUB_EVENT_NAME=pull_request GITHUB_EVENT_PATH=/tmp/event-pass.json node dist/index.js
+
+      - name: Action should pass when there are no tasks
+        run: GITHUB_EVENT_NAME=pull_request GITHUB_EVENT_PATH=/tmp/event-no-tasks.json node dist/index.js
+
+      - name: Action should fail when tasks are unchecked
+        id: run-failing
+        continue-on-error: true
+        run: GITHUB_EVENT_NAME=pull_request GITHUB_EVENT_PATH=/tmp/event-fail.json node dist/index.js
+
+      - name: Verify action failed as expected
+        if: steps.run-failing.outcome != 'failure'
+        run: |
+          echo "Expected the action to fail but it succeeded"
+          exit 1
