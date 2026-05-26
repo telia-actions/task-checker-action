@@ -10,7 +10,9 @@ describe("parseTasks", () => {
   });
 
   it("parses checked ([x]/[X]) and unchecked tasks including * bullets", () => {
-    const result = parseTasks("- [x] Done\n- [X] Also done\n- [ ] Pending\n* [x] Star");
+    const result = parseTasks(
+      "- [x] Done\n- [X] Also done\n- [ ] Pending\n* [x] Star",
+    );
     expect(result.tasks).toEqual([
       { text: "Done", status: "checked" },
       { text: "Also done", status: "checked" },
@@ -22,10 +24,18 @@ describe("parseTasks", () => {
   });
 
   it("not-applicable sub-item: ignores pending task (case-insensitive), leaves checked unchanged, requires adjacency", () => {
-    expect(parseTasks("- [ ] Task\n  - [ ] Not applicable").tasks[0].status).toBe("ignored");
-    expect(parseTasks("- [ ] Task\n  - [ ] NOT APPLICABLE").tasks[0].status).toBe("ignored");
-    expect(parseTasks("- [x] Task\n  - [ ] Not applicable").tasks[0].status).toBe("checked");
-    expect(parseTasks("- [ ] Task\n\n  - [ ] Not applicable").tasks[0].status).toBe("pending");
+    expect(
+      parseTasks("- [ ] Task\n  - [ ] Not applicable").tasks[0].status,
+    ).toBe("ignored");
+    expect(
+      parseTasks("- [ ] Task\n  - [ ] NOT APPLICABLE").tasks[0].status,
+    ).toBe("ignored");
+    expect(
+      parseTasks("- [x] Task\n  - [ ] Not applicable").tasks[0].status,
+    ).toBe("checked");
+    expect(
+      parseTasks("- [ ] Task\n\n  - [ ] Not applicable").tasks[0].status,
+    ).toBe("pending");
   });
 
   it("ignore blocks exclude contained tasks; multiple blocks and tasks outside are handled correctly", () => {
@@ -39,11 +49,16 @@ describe("parseTasks", () => {
 
   it("unclosed ignore block strips rest of body and calls onWarning", () => {
     const onWarning = vi.fn();
-    const result = parseTasks("- [x] Before\n<!-- ignore-task-list-start -->\n- [ ] Stripped", onWarning);
+    const result = parseTasks(
+      "- [x] Before\n<!-- ignore-task-list-start -->\n- [ ] Stripped",
+      onWarning,
+    );
     expect(result.tasks).toHaveLength(1);
     expect(result.tasks[0].text).toBe("Before");
     expect(onWarning).toHaveBeenCalledOnce();
-    expect(onWarning).toHaveBeenCalledWith("Unclosed ignore-task-list-start block found; ignoring rest of PR body");
+    expect(onWarning).toHaveBeenCalledWith(
+      "Unclosed ignore-task-list-start block found; ignoring rest of PR body",
+    );
   });
 
   it("allDone is true only when all tasks are checked or ignored, false otherwise", () => {
@@ -51,7 +66,9 @@ describe("parseTasks", () => {
     expect(pending.allDone).toBe(false);
     expect(pending.pendingCount).toBe(1);
 
-    const allResolved = parseTasks("- [x] Done\n- [ ] Skipped\n  - [ ] Not applicable");
+    const allResolved = parseTasks(
+      "- [x] Done\n- [ ] Skipped\n  - [ ] Not applicable",
+    );
     expect(allResolved.allDone).toBe(true);
     expect(allResolved.pendingCount).toBe(0);
   });

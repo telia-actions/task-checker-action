@@ -6,7 +6,9 @@ export async function run(): Promise<void> {
   // 1. Only run on pull_request and pull_request_review events
   const eventName = github.context.eventName;
   if (eventName !== "pull_request" && eventName !== "pull_request_review") {
-    core.warning(`This action is designed for pull_request events. Skipping (event: ${eventName}).`);
+    core.warning(
+      `This action is designed for pull_request events. Skipping (event: ${eventName}).`,
+    );
     return;
   }
 
@@ -24,6 +26,8 @@ export async function run(): Promise<void> {
       .filter((t) => t.status === "pending")
       .map((t) => `  - ${t.text}`)
       .join("\n");
-    core.setFailed(`PR has ${result.pendingCount} unchecked task(s):\n${pendingList}`);
+    core.setFailed(
+      `PR has ${result.pendingCount} unchecked task(s):\n${pendingList}`,
+    );
   }
 }

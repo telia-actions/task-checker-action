@@ -48,7 +48,9 @@ describe("run", () => {
     vi.clearAllMocks();
 
     // all checked
-    mockContext.payload = { pull_request: { body: "- [x] Task A\n- [x] Task B" } };
+    mockContext.payload = {
+      pull_request: { body: "- [x] Task A\n- [x] Task B" },
+    };
     await run();
     expect(core.setFailed).not.toHaveBeenCalled();
 
@@ -67,7 +69,9 @@ describe("run", () => {
 
     await run();
 
-    expect(core.setFailed).toHaveBeenCalledWith(expect.stringContaining("Task B"));
+    expect(core.setFailed).toHaveBeenCalledWith(
+      expect.stringContaining("Task B"),
+    );
   });
 
   it("not-applicable sub-item skips parent task", async () => {
@@ -94,7 +98,9 @@ describe("run", () => {
 
     // unclosed ignore block
     mockContext.payload = {
-      pull_request: { body: "<!-- ignore-task-list-start -->\n- [ ] Never ends" },
+      pull_request: {
+        body: "<!-- ignore-task-list-start -->\n- [ ] Never ends",
+      },
     };
     await run();
     expect(core.warning).toHaveBeenCalled();
