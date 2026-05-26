@@ -33029,11 +33029,16 @@ function parseTasks(body, onWarning) {
         if (text.length === 0)
             continue;
         const nextLine = lines[i + 1];
-        const status = checked
-            ? "checked"
-            : nextLine !== undefined && NOT_APPLICABLE_RE.test(nextLine)
-                ? "ignored"
-                : "pending";
+        let status;
+        if (checked) {
+            status = "checked";
+        }
+        else if (nextLine !== undefined && NOT_APPLICABLE_RE.test(nextLine)) {
+            status = "ignored";
+        }
+        else {
+            status = "pending";
+        }
         if (status === "pending")
             pendingCount++;
         tasks.push({ text, status });
@@ -33053,23 +33058,31 @@ async function run() {
     // 3. Parse tasks and log warnings for any malformed tasks
     const result = parseTasks(body, (msg) => warning(msg));
     // 4. Fail or succeed
-    if (!result.allDone) {
+    if (result.allDone) {
+        info("✅ All tasks completed");
+    }
+    else {
         const pendingList = result.tasks
             .filter((t) => t.status === "pending")
             .map((t) => `  - ${t.text}`)
             .join("\n");
         setFailed(`PR has ${result.pendingCount} unchecked task(s):\n${pendingList}`);
     }
-    else {
-        info("✅ All tasks completed");
-    }
 }
 
-run().catch((err) => {
-    const message = err instanceof Error
-        ? err.message
-        : err !== null && typeof err === "object" && "message" in err
-            ? String(err.message)
-            : String(err);
+try {
+    await run();
+}
+catch (err) {
+    let message;
+    if (err instanceof Error) {
+        message = err.message;
+    }
+    else if (err !== null && typeof err === "object" && "message" in err) {
+        message = String(err.message);
+    }
+    else {
+        message = String(err);
+    }
     setFailed(message);
-});
+}

@@ -2,6 +2,7 @@
   "name": "task-checker-action",
   "version": "0.0.1",
   "description": "GitHub Action that checks if all PR task checkboxes are checked",
+  "private": true,
   "type": "module",
   "packageManager": "pnpm@11.3.0",
   "engines": {

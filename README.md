@@ -59,8 +59,7 @@ The action runs on `pull_request` and `pull_request_review` events. On all other
 ```bash
 pnpm install         # install dependencies
 pnpm test            # run tests
-pnpm check           # lint & format check (Biome)
-pnpm format          # auto-format
+pnpm lint            # lint & format check (Biome)
 pnpm bundle          # rebuild dist/index.js
 ```
 
