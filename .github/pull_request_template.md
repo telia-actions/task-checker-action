@@ -6,3 +6,4 @@
 
 - [ ] Tests run and passed
 - [ ] CHANGELOG.md has been updated
+  - [ ] Not applicable
