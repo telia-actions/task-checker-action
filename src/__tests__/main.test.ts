@@ -72,14 +72,24 @@ describe("run", () => {
     expect(core.setFailed).toHaveBeenCalledWith(expect.stringContaining("Task B"));
   });
 
-  it("not-applicable sub-item skips parent task", async () => {
+  it("not-applicable sub-item skips parent task when checked, fails when unchecked", async () => {
+    mockContext.payload = {
+      pull_request: { body: "- [ ] Task A\n  - [x] Not applicable" },
+    };
+
+    await run();
+
+    expect(core.setFailed).not.toHaveBeenCalled();
+
+    vi.clearAllMocks();
+
     mockContext.payload = {
       pull_request: { body: "- [ ] Task A\n  - [ ] Not applicable" },
     };
 
     await run();
 
-    expect(core.setFailed).not.toHaveBeenCalled();
+    expect(core.setFailed).toHaveBeenCalledWith(expect.stringContaining("Task A"));
   });
 
   it("ignore blocks: closed block excludes tasks; unclosed block triggers warning", async () => {

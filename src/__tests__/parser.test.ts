@@ -21,11 +21,12 @@ describe("parseTasks", () => {
     expect(result.allDone).toBe(false);
   });
 
-  it("not-applicable sub-item: ignores pending task (case-insensitive), leaves checked unchanged, requires adjacency", () => {
-    expect(parseTasks("- [ ] Task\n  - [ ] Not applicable").tasks[0].status).toBe("ignored");
-    expect(parseTasks("- [ ] Task\n  - [ ] NOT APPLICABLE").tasks[0].status).toBe("ignored");
-    expect(parseTasks("- [x] Task\n  - [ ] Not applicable").tasks[0].status).toBe("checked");
-    expect(parseTasks("- [ ] Task\n\n  - [ ] Not applicable").tasks[0].status).toBe("pending");
+  it("not-applicable sub-item: ignores pending task when checked (case-insensitive), leaves unchecked task pending when sub-item is unchecked, leaves checked unchanged, requires adjacency", () => {
+    expect(parseTasks("- [ ] Task\n  - [x] Not applicable").tasks[0].status).toBe("ignored");
+    expect(parseTasks("- [ ] Task\n  - [X] NOT APPLICABLE").tasks[0].status).toBe("ignored");
+    expect(parseTasks("- [ ] Task\n  - [ ] Not applicable").tasks[0].status).toBe("pending");
+    expect(parseTasks("- [x] Task\n  - [x] Not applicable").tasks[0].status).toBe("checked");
+    expect(parseTasks("- [ ] Task\n\n  - [x] Not applicable").tasks[0].status).toBe("pending");
   });
 
   it("ignore blocks exclude contained tasks; multiple blocks and tasks outside are handled correctly", () => {
@@ -51,7 +52,7 @@ describe("parseTasks", () => {
     expect(pending.allDone).toBe(false);
     expect(pending.pendingCount).toBe(1);
 
-    const allResolved = parseTasks("- [x] Done\n- [ ] Skipped\n  - [ ] Not applicable");
+    const allResolved = parseTasks("- [x] Done\n- [ ] Skipped\n  - [x] Not applicable");
     expect(allResolved.allDone).toBe(true);
     expect(allResolved.pendingCount).toBe(0);
   });

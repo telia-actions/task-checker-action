@@ -1,6 +1,6 @@
 # PR Task Checker
 
-This action reads the PR body, parses GFM task-list checkboxes (`- [ ]` / `- [x]`), and fails the workflow if any tasks remain unchecked. 
+This action reads the PR body, parses GFM task-list checkboxes (`- [ ]` / `- [x]`), and fails the workflow if any tasks remain unchecked.
 Tasks can be individually suppressed with a `Not applicable` line or excluded in bulk using an ignore block.
 
 ## Usage
@@ -34,10 +34,10 @@ Add an indented `Not applicable` checkbox on the following line beneath an unche
 
 ```markdown
 - [ ] Deploy to staging
-  - [ ] Not applicable
+  - [x] Not applicable
 ```
 
-The sub-checkbox can be either checked or unchecked — its presence is what marks the parent task as ignored.
+The sub-checkbox must be checked to mark the parent task as ignored. If left unchecked, the parent task will still be treated as an outstanding/pending task.
 
 ### Ignore block
 
@@ -45,6 +45,7 @@ Wrap any tasks in `<!-- ignore-task-list-start -->` / `<!-- ignore-task-list-end
 
 ```markdown
 <!-- ignore-task-list-start -->
+
 - [ ] This task is ignored
 - [ ] So is this one
 <!-- ignore-task-list-end -->
