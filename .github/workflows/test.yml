@@ -56,12 +56,17 @@ jobs:
           echo '{"pull_request":{"body":"- [x] Task 1\n- [x] Task 2"}}' > /tmp/event-pass.json
           echo '{"pull_request":{"body":"- [x] Task 1\n- [ ] Task 2"}}' > /tmp/event-fail.json
           echo '{"pull_request":{"body":""}}' > /tmp/event-no-tasks.json
+          echo '{"pull_request":{"body":"- [ ] Task 1\n  - [x] Not applicable"}}' > /tmp/event-na-pass.json
+          echo '{"pull_request":{"body":"- [ ] Task 1\n  - [ ] Not applicable"}}' > /tmp/event-na-fail.json
 
       - name: Action should pass when all tasks are checked
         run: GITHUB_EVENT_NAME=pull_request GITHUB_EVENT_PATH=/tmp/event-pass.json node dist/index.js
 
       - name: Action should pass when there are no tasks
         run: GITHUB_EVENT_NAME=pull_request GITHUB_EVENT_PATH=/tmp/event-no-tasks.json node dist/index.js
+
+      - name: Action should pass when task is skipped because not applicable is checked
+        run: GITHUB_EVENT_NAME=pull_request GITHUB_EVENT_PATH=/tmp/event-na-pass.json node dist/index.js
 
       - name: Action should fail when tasks are unchecked
         id: run-failing
@@ -72,4 +77,15 @@ jobs:
         if: steps.run-failing.outcome != 'failure'
         run: |
           echo "Expected the action to fail but it succeeded"
+          exit 1
+
+      - name: Action should fail when not applicable is unchecked
+        id: run-na-failing
+        continue-on-error: true
+        run: GITHUB_EVENT_NAME=pull_request GITHUB_EVENT_PATH=/tmp/event-na-fail.json node dist/index.js
+
+      - name: Verify not applicable fail action failed as expected
+        if: steps.run-na-failing.outcome != 'failure'
+        run: |
+          echo "Expected the action to fail when Not applicable is unchecked but it succeeded"
           exit 1
