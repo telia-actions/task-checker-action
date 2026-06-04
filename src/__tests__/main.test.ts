@@ -69,9 +69,7 @@ describe("run", () => {
 
     await run();
 
-    expect(core.setFailed).toHaveBeenCalledWith(
-      expect.stringContaining("Task B"),
-    );
+    expect(core.setFailed).toHaveBeenCalledWith(expect.stringContaining("Task B"));
   });
 
   it("not-applicable sub-item skips parent task", async () => {
